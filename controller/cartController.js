@@ -47,21 +47,26 @@ const addToCart = async (req, res) => {
 
 
 
-const removeFromCart = async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ user: req.user.id });
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
-
-    cart.items = cart.items.filter((item) => !item.product.equals(req.params.productId));
-
-    cart.totalPrice = cart.items.reduce((total, item) => total + item.quantity * item.product.price, 0);
-
-    await cart.save();
-    res.json(cart);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+  const removeFromCart = async (req, res) => {
+    const { cartId, productId } = req.params;
+  
+    try {
+      const cart = await Cart.findById(cartId);
+      if (!cart) return res.status(404).json({ message: "Cart not found" });
+  
+      cart.items = cart.items.filter((item) => item.product.toString() !== productId);
+  
+      cart.totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0);
+  
+      await cart.save();
+      const populatedCart = await cart.populate("items.product");
+  
+      res.json({ message: "Product removed from cart", cart: populatedCart });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 const clearCart = async (req, res) => {
   try {
