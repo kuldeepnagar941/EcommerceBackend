@@ -39,8 +39,8 @@ app.use("/wishlist", wishlistRoutes);
 const addressRoutes = require('./routes/addressRoute')
 app.use('/address',addressRoutes)
 
-// const userOrderRoutes = require("./routes/userOrderRoutes");
-// app.use("/userorder", userOrderRoutes);
+const userOrderRoutes = require("./routes/userOrderRoutes");
+app.use("/userorder", userOrderRoutes);
 
 const sellerOderRoutes= require("./routes/sellerOderRoute")
 app.use('/sellerorder', sellerOderRoutes)

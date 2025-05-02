@@ -3,7 +3,7 @@ const userModel = require("../model/userModel");
 const productModel = require ("../model/productModel");
 const Inventory = require('../model/inventoryModel');
 const UserOrder = require("../model/userOrderModel");
-
+const Cart = require("../model/cartModel");
 
 
 
@@ -13,7 +13,6 @@ const createOrder = async (req, res) => {
   
       const { sellerId, productId, quantity, addressId, status, userId, payment_mode } = req.body;
   
-     
       const inventory = await Inventory.findOne({ productId, sellerId });
       console.log(">>>>>>>>>Inventory data:", inventory); 
       if (!inventory) {
@@ -28,24 +27,28 @@ const createOrder = async (req, res) => {
       inventory.updatedAt = new Date();
       const result = await inventory.save();
       console.log(">>>>>>>>>>>>>>>>result", req.body);
-
   
-    
       const order = new Order(req.body);
       console.log("Received order data:", req.body);
       await order.save();
-
-
-       
-              
-              const newOrder = new UserOrder({
-                userId,
-                productId,
-                addressId,
-                payment_mode
-              });
-      
-              await newOrder.save();
+  
+      const newOrder = new UserOrder({
+        userId,
+        productId,
+        addressId,
+        payment_mode
+      });
+  
+      await newOrder.save();
+  
+      // Update cart 
+      const updatedCart = await Cart.findOneAndUpdate(
+        { user: userId, "items.product": productId },
+        { status: "fulfilled" },
+        { new: true }
+      );
+  
+      console.log("Updated Cart:", updatedCart);
   
       res.status(201).json({ success: true, message: "Order placed successfully", order });
     } catch (error) {
@@ -53,6 +56,7 @@ const createOrder = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+  
 
 
 const getAllOrders = async (req, res) => {
@@ -69,6 +73,7 @@ const getAllOrdersseller = async (req, res) => {
         console.log(">>>>>>>>>",req.params.id);
         
         const sellerId = req.params.id;
+        console.log("sellerId>>>>>>>>>>>>>>",sellerId);
         
         const order = await Order.find({sellerId}).populate("productId");
         

@@ -5,7 +5,7 @@ const User = require ("../model/userModel");
 module.exports = async (req,res,next) =>{
     try{
         const header = req.headers.authorization
-        console.log(`>>>>>>>>header>>>>>>>`,header);
+        console.log(`>>>>>>>>headers>>>>>>>>>>>`,header);
         if(!header){
            return res.status(401).json ({message:"Unauthorized header"})
         }

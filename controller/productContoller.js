@@ -30,7 +30,7 @@ exports.createProduct = async (req, res) => {
   };
 exports.allproduct = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find( {active :"true"} );
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -51,7 +51,7 @@ exports.getAllProducts = async (req, res) => {
 
 exports.getAllProductsInactive = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find({active:"false"});
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: error.message });
