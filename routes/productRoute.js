@@ -4,9 +4,9 @@ const productController = require("../controller/productContoller");
 const varifyauth = require('../middlewares/verifyAuth')
 
 
-router.get("/allproduct", productController.allproduct);
+router.get("/alluserproduct", productController.allproduct);
 router.post("/", productController.createProduct); 
-router.get("/getuserproduct/:userid", productController.getAllProducts); 
+router.get("/getsellerproduct/:userid", productController.getAllProducts); 
 router.get("/:id", productController.getoneProduct); 
 router.put("/:id", productController.updateProduct); 
 router.delete("/:id", productController.deleteProduct);
